@@ -179,9 +179,44 @@ const calculateMACD = (prices) => {
     };
 };
 
+const calculateBollingerBands = (prices, period = 20, multiplier = 2) => {
+    const bands = [];
+
+    if (prices.length < period) return bands;
+
+    for (let i = period - 1; i < prices.length; i++) {
+
+        let sum = 0;
+
+        for (let j = i - period + 1; j <= i; j++) {
+            sum += prices[j].close;
+        }
+
+        const sma = sum / period;
+
+        let variance = 0;
+
+        for (let j = i - period + 1; j <= i; j++) {
+            variance += Math.pow(prices[j].close - sma, 2);
+        }
+
+        const stdDev = Math.sqrt(variance / period);
+
+        bands.push({
+            date: prices[i].date,
+            upper: Number((sma + multiplier * stdDev).toFixed(2)),
+            middle: Number(sma.toFixed(2)),
+            lower: Number((sma - multiplier * stdDev).toFixed(2)),
+        });
+    }
+
+    return bands;
+};
+
 module.exports = {
     calculateSMA,
     calculateEMA,
     calculateRSI,
     calculateMACD,
+    calculateBollingerBands,
 };

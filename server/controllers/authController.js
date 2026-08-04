@@ -1,12 +1,20 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const generateToken = require("../utils/generateToken");
 
 // ====================== REGISTER ======================
 
 const register = async (req, res) => {
     try {
         const { name, email, password } = req.body;
+
+        // Check if all fields are provided
+        if (!name || !email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide all required fields",
+            });
+        }
 
         // Check if user already exists
         const existingUser = await User.findOne({ email });
@@ -28,9 +36,13 @@ const register = async (req, res) => {
             password: hashedPassword,
         });
 
+        // Generate JWT
+        const token = generateToken(user._id);
+
         res.status(201).json({
             success: true,
             message: "User registered successfully",
+            token,
             user: {
                 id: user._id,
                 name: user.name,
@@ -54,6 +66,14 @@ const login = async (req, res) => {
     try {
         const { email, password } = req.body;
 
+        // Check if all fields are provided
+        if (!email || !password) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide email and password",
+            });
+        }
+
         // Check if user exists
         const user = await User.findOne({ email });
 
@@ -74,18 +94,9 @@ const login = async (req, res) => {
             });
         }
 
-        // Generate JWT Token
-        const token = jwt.sign(
-            {
-                id: user._id,
-            },
-            process.env.JWT_SECRET,
-            {
-                expiresIn: "7d",
-            }
-        );
+        // Generate JWT
+        const token = generateToken(user._id);
 
-        // Login Success
         res.status(200).json({
             success: true,
             message: "Login successful",

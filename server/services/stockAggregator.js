@@ -2,11 +2,19 @@ const { getStockData } = require("./yahooService");
 
 const getCompleteStockData = async (symbol) => {
     try {
-        // Yahoo Finance Data
         const yahooData = await getStockData(symbol);
 
         return {
-            yahoo: yahooData,
+            symbol: yahooData.symbol,
+            companyName: yahooData.companyName,
+            currentPrice: yahooData.currentPrice,
+            marketCap: yahooData.marketCap,
+            peRatio: yahooData.peRatio,
+            volume: yahooData.volume,
+            fiftyTwoWeekHigh: yahooData.fiftyTwoWeekHigh,
+            fiftyTwoWeekLow: yahooData.fiftyTwoWeekLow,
+            lastUpdated: new Date(),
+            source: "Yahoo Finance",
         };
 
     } catch (error) {

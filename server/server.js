@@ -4,6 +4,10 @@ const express = require("express");
 const cors = require("cors");
 const userRoutes = require("./routes/userRoutes");
 const stockRoutes = require("./routes/stockRoutes");
+const newsRoutes = require("./routes/newsRoutes");
+const portfolioRoutes = require("./routes/portfolioRoutes");
+const watchlistRoutes = require("./routes/watchlistRoutes");
+const dashboardRoutes = require("./routes/dashboardRoutes");
 
 const connectDB = require("./config/db");
 
@@ -17,6 +21,10 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/stocks", stockRoutes);
+app.use("/api/news", newsRoutes);
+app.use("/api/portfolio", portfolioRoutes);
+app.use("/api/watchlist", watchlistRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.get("/", (req, res) => {
     res.json({
