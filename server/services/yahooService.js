@@ -2,9 +2,12 @@ const YahooFinance = require("yahoo-finance2").default;
 
 const yahooFinance = new YahooFinance();
 
+// ================= STOCK QUOTE =================
+
 const getStockData = async (symbol) => {
     try {
         const quote = await yahooFinance.quote(symbol);
+
         return {
             symbol: quote.symbol,
             companyName: quote.longName,
@@ -24,6 +27,24 @@ const getStockData = async (symbol) => {
             fiftyTwoWeekHigh: quote.fiftyTwoWeekHigh,
             fiftyTwoWeekLow: quote.fiftyTwoWeekLow,
         };
+
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
+
+// ================= HISTORICAL DATA =================
+
+const getHistoricalData = async (symbol) => {
+    try {
+
+        const result = await yahooFinance.chart(symbol, {
+            period1: "2025-01-01",
+            interval: "1d",
+        });
+
+        return result;
+
     } catch (error) {
         throw new Error(error.message);
     }
@@ -31,4 +52,5 @@ const getStockData = async (symbol) => {
 
 module.exports = {
     getStockData,
+    getHistoricalData,
 };
